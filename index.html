@@ -1,64 +1,80 @@
-<div id="image-container"></div>
-<button id="new-image">Add new image</button>
-<button id="new-grid">Add new grid</button>
+<html>
+  <body class="p-4">
+    <div>
+      <head>
+        <script src="https://cdn.tailwindcss.com"></script>
+      </head>
+      <p>This generator works only under specific conditions. You must disable your browser cache to allow it to work. This method is simple, it appends a new image element with predefined <code>src</code> attribute every time, but if your cache is enabled this same image is served every time. This is why you must disable your cache so it fetches a different image onclick each time. A later attempt to perform a get request was blocked due to Cross-Origin Resource Sharing (CORS).</p>
+
+      <p>If you want to use this in Chrome follow <a href="https://stackoverflow.com/a/7000899/6927572">these instructions</a> first. Then click "Add new image" below to add a new image to the grid. You can add up to 16 images. Click on an image to remove it from the grid. Click the "add new grid" button below to add 16 images automatically (1200ms delay). In theory there should be a maximum of 16 images but I can't be bothered to write that code right now.</p>
+    </div>
+    <div id="image-container" class="grid grid-cols-4 gap-2 my-4"></div>
+
+    <div class="mt-8">
+      <button id="new-image" class="bg-gray border-2 p-2 ">Add new image</button>
+      <button id="new-grid" class="bg-gray border-2 p-2 ">Add new grid</button>
+    </div>
+  </body>
+</html>
 <script>
   //store current amount of images as a global var
   var imageCount = 0;
   //append image on new-image button click in vanilla js
+  let newImageButton = document.getElementById("new-image");
+  let newGridButton = document.getElementById("new-grid");
+  let imageContainer = document.getElementById("image-container");
 
   function createImage() {
+    newImageButton.disabled = true;
     var img = document.createElement("img");
     img.src = "https://thispersondoesnotexist.com/image";
-    document.getElementById("image-container").appendChild(img);
-    console.log("image appended");
+    img
+      .classList
+      .add("w-full", "h-full", "rounded-full", "cursor-pointer");
+    document
+      .getElementById("image-container")
+      .appendChild(img);
   }
-  
+
   function createSixteenImages() {
-   //create up to 16 images, while imageCount is less than 16 with a 1second delay
+    //create up to 16 images, while imageCount is less than 16 with a 1.2 second delay
     if (imageCount < 16) {
       createImage();
       imageCount++;
       setTimeout(createSixteenImages, 1200);
     }
-
   }
 
-  document.getElementById("new-image").addEventListener("click", createImage);
-  document.getElementById("new-grid").addEventListener("click", createSixteenImages);
+  newImageButton.addEventListener("click", createImage);
+  newGridButton.addEventListener("click", createSixteenImages);
 
   //remove image on image click in vanilla js
-  document.getElementById("image-container").addEventListener("click", function (e) {
+  imageContainer.addEventListener("click", function (e) {
     if (e.target && e.target.nodeName == "IMG") {
-      e.target.remove();
+      e
+        .target
+        .remove();
       imageCount--;
-      console.log("image removed");
-      console.log(imageCount);
     }
     //if image-container has less than 16 images show new-image button
-    if (document.getElementById("image-container").childElementCount < 16) {
-      document.getElementById("new-image").style.display = "block";
+    if (imageContainer.childElementCount < 16) {
+      document
+        .getElementById("new-image")
+        .style
+        .display = "block";
     }
   });
 
   //hide new-image button when image-container has 16 images
-  document.getElementById("image-container").addEventListener("DOMNodeInserted", function () {
-    if (document.getElementById("image-container").childElementCount == 16) {
-      document.getElementById("new-image").style.display = "none";
-      console.log("new-image button hidden");
-    }
- 
-  });
+  document
+    .getElementById("image-container")
+    .addEventListener("DOMNodeInserted", function () {
+      if (imageContainer.childElementCount == 16) {
+        document
+          .getElementById("new-image")
+          .style
+          .display = "none";
+        console.log("new-image button hidden");
+      }
+    });
 </script>
-
-<style>
-  #image-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-  }
-  #image-container img {
-    width: 100%;
-    height: 100%;
-  }
-</style>
-<script>
-
